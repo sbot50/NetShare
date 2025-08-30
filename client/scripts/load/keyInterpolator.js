@@ -59,7 +59,6 @@ init.then(async () => {
                 else node.classList.remove("pressed");
             }
         });
-        console.log(stickLeft.x, stickLeft.y);
         stickLeft.stick.style.transform = `translate(${stickLeft.x}vh, ${stickLeft.y}vh)`;
         stickRight.stick.style.transform = `translate(${stickRight.x}vh, ${stickRight.y}vh)`;
     },1);

@@ -8,7 +8,6 @@ let mouse_x;
 let mouse_y;
 
 document.addEventListener("keydown", (event) => keyPressed(event));
-document.addEventListener("keyup", (event) => keyReleased(event));
 document.addEventListener("mousemove", (event) => mouseMoved(event));
 document.addEventListener("mousedown", (event) => mouseClicked(event));
 document.addEventListener("contextmenu", (event) => event.preventDefault());
@@ -35,12 +34,18 @@ init.then(async () => {
         }
         localStorage.setItem("lastConfig", configName);
     });
+    document.querySelector("#rename").addEventListener("click", () => renameConfig());
+    document.querySelector("#import_new").addEventListener("click", () => importNewConfig());
+    document.querySelector("#import").addEventListener("click", () => importConfig(configName));
+    document.querySelector("#export").addEventListener("click", () => exportConfig(configName));
+    document.querySelector("#delete").addEventListener("click", () => deleteConfig());
 });
 
 async function showAlert() {
     const name = prompt("Enter config name");
     if (name) {
-        const config = await fetch("../res/data/default.json").then((response) => response.json());
+        configName = name;
+        config = await fetch("../res/data/default.json").then((response) => response.json());
         localStorage.setItem("config_" + name, JSON.stringify(config));
 
         const option = document.createElement("option");
@@ -48,7 +53,6 @@ async function showAlert() {
         option.textContent = name;
         document.querySelector("#config").insertBefore(option, document.querySelector("#config").lastElementChild);
         document.querySelector("#config").value = name;
-        configName = name;
     } else {
         document.querySelector("#config").value = configName;
     }
@@ -74,7 +78,11 @@ async function changeButton(button) {
 
 async function unbindButton(button) {
     if (button.disabled) return;
-    setButton(button, null);
+    setButton(button, {
+        input: null,
+        negative: false,
+        advanced: false,
+    });
 }
 
 async function getConfig(name) {
@@ -104,7 +112,7 @@ function setButton(button, value) {
         negative: value.negative,
         advanced: value.advanced,
     };
-    if (!value || (!value.input.match(/^\${.*?}$/) && !value.input.match(/^abs\(min\(0,\${.*?}\)\)$/) && !value.input.match(/^max\(0,\${.*?}\)$/) && !value.advanced)) {
+    if (!value.input || (!value.input.match(/^\${.*?}$/) && !value.input.match(/^abs\(min\(0,\${.*?}\)\)$/) && !value.input.match(/^max\(0,\${.*?}\)$/) && !value.advanced)) {
         button.textContent = "Unbound";
         button.dataset.value = "0";
     } else if (!value.advanced) {
@@ -155,10 +163,6 @@ function keyPressed(event) {
     }
     setButton(clickedButton, value);
     clickedButton = null;
-}
-
-function keyReleased(event) {
-
 }
 
 function mouseMoved(event) {
@@ -216,5 +220,80 @@ function cancelBind(event) {
         mouse_x = (event.clientX - window.innerWidth/2)/(window.innerWidth/2);
         mouse_y = (event.clientY - window.innerHeight/2)/(window.innerHeight/2);
         ignore = false;
+    }
+}
+
+async function renameConfig() {
+    if (configName === "Default") return;
+    const name = prompt("Enter new config name");
+    if (!name || name === "Default") return;
+    if (localStorage.getItem("config_" + name)) return;
+    localStorage.setItem("config_" + name, JSON.stringify(config));
+    localStorage.removeItem("config_" + configName);
+    const option = document.querySelector(`#config option[value="${configName}"]`);
+    option.value = name;
+    option.textContent = name;
+    document.querySelector("#config").value = name;
+    configName = name;
+    localStorage.setItem("lastConfig", configName);
+}
+
+async function importNewConfig() {
+    const name = prompt("Enter config name");
+    if (!name || name === "Default" || localStorage.getItem("config_" + name)) return;
+    await importConfig(name);
+}
+
+async function importConfig(name) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
+    input.addEventListener("change", async () => {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", async () => {
+            const result = reader.result;
+            if (typeof result != "string") return;
+            const configSelect = document.querySelector("#config");
+            if (!configSelect.querySelector(`option[value="${name}"]`)) {
+                const option = document.createElement("option");
+                option.value = name;
+                option.textContent = name;
+                configSelect.insertBefore(option, document.querySelector("#config").lastElementChild);
+            }
+            configSelect.value = name;
+            localStorage.setItem("config_" + name, result);
+            configName = name;
+            config = await getConfig(configName);
+            loadConfig();
+        });
+        reader.readAsText(file);
+    });
+    input.click();
+}
+
+async function exportConfig() {
+    const json = JSON.stringify(config, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "config.json";
+    link.click();
+    URL.revokeObjectURL(url);
+}
+
+async function deleteConfig() {
+    if (configName === "Default") return;
+    if (confirm("Are you sure you want to delete this config?")) {
+        const configSelect = document.querySelector("#config");
+        const option = configSelect.querySelector(`option[value="${configName}"]`);
+        const previousOption = option.previousElementSibling;
+        localStorage.removeItem("config_" + configName);
+        option.remove();
+        configSelect.value = previousOption.value;
+        configName = previousOption.value;
+        config = await getConfig(configName);
+        loadConfig();
     }
 }
