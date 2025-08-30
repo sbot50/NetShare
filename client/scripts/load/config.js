@@ -1,7 +1,6 @@
 import init from "../init/controls.js"; //Dependency
 import translate from "../util/translate.js";
-let configName;
-let config;
+import configUtils from "../util/config.js";
 let clickedButton;
 let ignore = false;
 let mouse_x;
@@ -19,8 +18,6 @@ init.then(async () => {
         button.nextElementSibling.addEventListener("click", () => unbindButton(button));
     });
 
-    configName = localStorage.getItem("lastConfig") || "Default";
-    config = await getConfig(configName);
     loadConfig();
 
     document.querySelector("#config").addEventListener("change", async () => {
@@ -28,25 +25,23 @@ init.then(async () => {
             await showAlert();
             loadConfig();
         } else {
-            configName = document.querySelector("#config").value;
-            config = await getConfig(configName);
+            configUtils.setCurrent(document.querySelector("#config").value);
             loadConfig();
         }
-        localStorage.setItem("lastConfig", configName);
     });
     document.querySelector("#rename").addEventListener("click", () => renameConfig());
     document.querySelector("#import_new").addEventListener("click", () => importNewConfig());
-    document.querySelector("#import").addEventListener("click", () => importConfig(configName));
-    document.querySelector("#export").addEventListener("click", () => exportConfig(configName));
+    document.querySelector("#import").addEventListener("click", () => importConfig(configUtils.current()));
+    document.querySelector("#export").addEventListener("click", () => exportConfig(configUtils.current()));
     document.querySelector("#delete").addEventListener("click", () => deleteConfig());
+
+    setInterval(() => checkGamepads(), 1);
 });
 
 async function showAlert() {
     const name = prompt("Enter config name");
     if (name) {
-        configName = name;
-        config = await fetch("../res/data/default.json").then((response) => response.json());
-        localStorage.setItem("config_" + name, JSON.stringify(config));
+        configUtils.create(name);
 
         const option = document.createElement("option");
         option.value = name;
@@ -54,7 +49,7 @@ async function showAlert() {
         document.querySelector("#config").insertBefore(option, document.querySelector("#config").lastElementChild);
         document.querySelector("#config").value = name;
     } else {
-        document.querySelector("#config").value = configName;
+        document.querySelector("#config").value = configUtils.current();
     }
 }
 
@@ -85,21 +80,11 @@ async function unbindButton(button) {
     });
 }
 
-async function getConfig(name) {
-    let config;
-    if (name === "Default") {
-        config = await fetch("../res/data/default.json").then((response) => response.json());
-    } else {
-        config = JSON.parse(localStorage.getItem("config_" + name));
-    }
-
-    return config;
-}
-
 function loadConfig() {
+    const config = configUtils.get();
     const buttons = document.body.querySelectorAll("#controls .inputButton");
     buttons.forEach((button) => {
-        button.disabled = configName === "Default";
+        button.disabled = configUtils.current() === "Default";
         const key = button.dataset.key;
         const value = config[key];
         setButton(button, value);
@@ -142,10 +127,9 @@ function setButton(button, value) {
             button.dataset.value = (value.negative) ? "abs(min(0," + value.input + "))" : "max(0," + value.input + ")";
         }
     }
-    if (configName !== "Default") {
+    if (configUtils.current() !== "Default") {
         configData.input = button.dataset.value;
-        config[button.dataset.key] = configData;
-        localStorage.setItem("config_" + configName, JSON.stringify(config));
+        configUtils.set(button.dataset.key, configData);
     }
 }
 
@@ -224,23 +208,17 @@ function cancelBind(event) {
 }
 
 async function renameConfig() {
-    if (configName === "Default") return;
     const name = prompt("Enter new config name");
-    if (!name || name === "Default") return;
-    if (localStorage.getItem("config_" + name)) return;
-    localStorage.setItem("config_" + name, JSON.stringify(config));
-    localStorage.removeItem("config_" + configName);
-    const option = document.querySelector(`#config option[value="${configName}"]`);
+    const option = document.querySelector(`#config option[value="${configUtils.current()}"]`);
     option.value = name;
     option.textContent = name;
     document.querySelector("#config").value = name;
-    configName = name;
-    localStorage.setItem("lastConfig", configName);
+    configUtils.rename(name);
 }
 
 async function importNewConfig() {
     const name = prompt("Enter config name");
-    if (!name || name === "Default" || localStorage.getItem("config_" + name)) return;
+    if (!name || name === "Default" || configUtils.exists(name)) return;
     await importConfig(name);
 }
 
@@ -262,9 +240,7 @@ async function importConfig(name) {
                 configSelect.insertBefore(option, document.querySelector("#config").lastElementChild);
             }
             configSelect.value = name;
-            localStorage.setItem("config_" + name, result);
-            configName = name;
-            config = await getConfig(configName);
+            configUtils.import(name, result);
             loadConfig();
         });
         reader.readAsText(file);
@@ -273,7 +249,7 @@ async function importConfig(name) {
 }
 
 async function exportConfig() {
-    const json = JSON.stringify(config, null, 2);
+    const json = JSON.stringify(configUtils.get(), null, 2);
     const blob = new Blob([json], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -284,16 +260,19 @@ async function exportConfig() {
 }
 
 async function deleteConfig() {
-    if (configName === "Default") return;
+    if (configUtils.current() === "Default") return;
     if (confirm("Are you sure you want to delete this config?")) {
         const configSelect = document.querySelector("#config");
-        const option = configSelect.querySelector(`option[value="${configName}"]`);
+        const option = configSelect.querySelector(`option[value="${configUtils.current()}"]`);
         const previousOption = option.previousElementSibling;
-        localStorage.removeItem("config_" + configName);
         option.remove();
         configSelect.value = previousOption.value;
-        configName = previousOption.value;
-        config = await getConfig(configName);
+        configUtils.delete();
+        configUtils.setCurrent(previousOption.value);
         loadConfig();
     }
+}
+
+function checkGamepads() {
+
 }
