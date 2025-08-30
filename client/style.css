@@ -13,6 +13,16 @@
   width: calc(100vw - 20px);
 }
 
+#txtfields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  width: min-content;
+}
+
 .container {
   display: flex;
   justify-content: center;
@@ -46,7 +56,7 @@
   font-weight: bold;
 }
 
-#nickname {
+#nickname, #id {
   font-size: 20px;
   border: none;
   border-bottom: black 1px solid;

@@ -161,12 +161,12 @@ function mouseMoved(event) {
         negative: false,
         advanced: false,
     }
-    if (x_movement > 0.2) {
+    if (x_movement > 0.1) {
         value.negative = x < mouse_x;
         value.input = `\${mouse_x}`;
         setButton(clickedButton, value);
         clickedButton = null;
-    } else if (y_movement > 0.2) {
+    } else if (y_movement > 0.1) {
         value.negative = y < mouse_y;
         value.input = `\${mouse_y}`;
         setButton(clickedButton, value);

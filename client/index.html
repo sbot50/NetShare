@@ -14,14 +14,20 @@
     <!--  Load  -->
     <script type="module" src="scripts/load/config.js"></script>
     <script type="module" src="scripts/load/keyInterpolator.js"></script>
+    <script type="module" src="scripts/load/nickname.js"></script>
+    <script type="module" src="scripts/load/id.js"></script>
 
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <div id="body" class="container vertical">
         <div id="settings" class="container vertical center">
-            <label for="nickname" class="label">Nickname</label><br>
-            <input type="text" id="nickname" placeholder="Anonymous">
+            <div id="txtfields">
+                <label for="id" class="label">ID</label>
+                <input type="text" id="id">
+                <label for="nickname" class="label">Nickname</label>
+                <input type="text" id="nickname" placeholder="Anonymous">
+            </div>
             <label for="config" class="label">Config</label><br>
             <div class="container">
                 <select name="configs" id="config">
