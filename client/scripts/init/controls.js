@@ -66,6 +66,38 @@ export default new Promise(resolve => {
                 container2.appendChild(inputContainer);
             }
 
+            if (key === "Left Stick" || key === "Right Stick") {
+                const label = document.createElement("label");
+                label.classList.add("inputLabel");
+                label.style.gridArea = "labeldeadzone";
+                label.textContent = "Deadzone";
+
+                const input = document.createElement("input");
+                input.id = (key === "Left Stick") ? "leftStickDeadzone" : "rightStickDeadzone";
+                input.classList.add("deadzoneInput");
+                input.classList.add("hover");
+                input.type = "range";
+                input.min = "0";
+                input.max = "1";
+                input.step = "0.01";
+                input.value = "0.1";
+                input.dataset.hoverText = "10%";
+                input.addEventListener("input", () => {
+                    input.value = parseFloat(input.value).toFixed(2);
+                    input.dataset.hoverText = `${(input.value * 100).toFixed(0)}%`;
+                });
+
+                const inputContainer = document.createElement("div");
+                inputContainer.classList.add("inputContainer");
+                inputContainer.style.gridArea = "inputdeadzone";
+                inputContainer.appendChild(input);
+
+                container2.appendChild(label);
+                container2.appendChild(inputContainer);
+
+                container2.style.gridTemplateAreas += `"labeldeadzone inputdeadzone"`;
+            }
+
             categoryContainer.appendChild(container2);
             container.appendChild(categoryContainer);
 

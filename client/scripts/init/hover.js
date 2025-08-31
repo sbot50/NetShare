@@ -7,15 +7,21 @@ const observer = new MutationObserver((mutations) => {
                 hoverChildren.forEach((child) => addHover(child));
             }
         });
+        if (mutation.attributeName === 'data-hover-text' && mutation.target === currentHover) {
+            startHover(mutation.target);
+        }
     });
 });
 
 let hover;
+let currentHover;
 
 document.addEventListener("DOMContentLoaded", () => {
     observer.observe(document.body, {
         childList: true,
-        subtree: true
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["data-hover-text"]
     });
 
     hover = document.querySelector("#hover");
@@ -30,6 +36,7 @@ function addHover(element) {
 }
 
 function startHover(element) {
+    currentHover = element;
     if (element.classList.contains("disabled")) return;
     hover.style.display = "block";
     hover.innerHTML = element.dataset.hoverText || "";
@@ -38,6 +45,7 @@ function startHover(element) {
 }
 
 function endHover() {
+    currentHover = null;
     hover.style.display = "none";
     hover.innerHTML = "";
     hover.style.left = "";

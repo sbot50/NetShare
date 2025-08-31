@@ -18,7 +18,12 @@ init.then(async () => {
         button.addEventListener("click", () => changeButton(button));
         button.nextElementSibling.addEventListener("click", () => unbindButton(button));
     });
+    document.querySelector("#leftStickDeadzone").addEventListener("change", (event) => {
 
+    });
+    document.querySelector("#rightStickDeadzone").addEventListener("change", (event) => {
+
+    });
     loadConfig();
 
     document.querySelector("#config").addEventListener("change", async () => {
