@@ -1,19 +1,13 @@
 import init from "../init/controls.js"; //Dependency
+import buttons from "../../../res/util/buttons.js";
 const inputs = await fetch("../res/data/inputs.json").then((response) => response.json());
 
-let buttons;
-const kb_keys = {};
-const mouse = {};
-const controller = {};
+let DOMButtons;
 
-document.addEventListener("keydown", (event) => keyDown(event));
-document.addEventListener("keyup", (event) => keyUp(event));
-document.addEventListener("mousemove", (event) => mouseMoved(event));
-document.addEventListener("mousedown", (event) => mouseDown(event));
-document.addEventListener("mouseup", (event) => mouseUp(event));
 init.then(async () => {
-    buttons = document.body.querySelectorAll("#controls .inputButton");
+    DOMButtons = document.body.querySelectorAll("#controls .inputButton");
     setInterval(() => {
+        const activeInputs = buttons.get();
         const stickLeft = {
             stick: null,
             x: 0,
@@ -24,15 +18,15 @@ init.then(async () => {
             x: 0,
             y: 0
         };
-        buttons.forEach((button) => {
+        DOMButtons.forEach((button) => {
             let value = button.dataset.value;
             const keys = value.match(/\${(.*?)}/g) || [];
             for (let key of keys) {
                 key = key.replace("${", "").replace("}", "");
                 let keyValue = 0;
-                if (Object.keys(kb_keys).includes(key)) keyValue = kb_keys[key];
-                else if (Object.keys(mouse).includes(key)) keyValue = mouse[key];
-                else if (Object.keys(controller).includes(key)) keyValue = controller[key];
+                if (Object.keys(activeInputs.keyboard).includes(key)) keyValue = activeInputs.keyboard[key];
+                else if (Object.keys(activeInputs.mouse).includes(key)) keyValue = activeInputs.mouse[key];
+                else if (Object.keys(activeInputs.controller).includes(key)) keyValue = activeInputs.controller[key];
                 value = value.replace("${" + key + "}", keyValue.toString());
             }
             value = window.math.evaluate(value);
@@ -63,30 +57,3 @@ init.then(async () => {
         stickRight.stick.style.transform = `translate(${stickRight.x}vh, ${stickRight.y}vh)`;
     },1);
 });
-
-function keyDown(event) {
-    const key = "key_" + event.code.replace("Key", "");
-    kb_keys[key] = 1;
-}
-
-function keyUp(event) {
-    const key = "key_" + event.code.replace("Key", "");
-    kb_keys[key] = 0;
-}
-
-function mouseMoved(event) {
-    mouse["mouse_x"] = (event.clientX - window.innerWidth/2)/(window.innerWidth/2);
-    mouse["mouse_y"] = (event.clientY - window.innerHeight/2)/(window.innerHeight/2);
-}
-
-function mouseDown(event) {
-    if (event.button === 0) mouse["mouse_left"] = 1;
-    if (event.button === 1) mouse["mouse_middle"] = 1;
-    if (event.button === 2) mouse["mouse_right"] = 1;
-}
-
-function mouseUp(event) {
-    if (event.button === 0) mouse["mouse_left"] = 0;
-    if (event.button === 1) mouse["mouse_middle"] = 0;
-    if (event.button === 2) mouse["mouse_right"] = 0;
-}

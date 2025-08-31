@@ -4,6 +4,6 @@ init.then(() => {
         if (document.querySelector("#id").value === "") {
             document.querySelector("#id").value = Math.random().toFixed(6).substring(2);
         }
-        localStorage.setItem("id", document.querySelector("#id").value);
+        localStorage.setItem("clientID", document.querySelector("#id").value);
     };
 });

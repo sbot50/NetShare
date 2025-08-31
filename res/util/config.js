@@ -6,7 +6,7 @@ function createConfig(name) {
 }
 
 function setCurrentConfig(name) {
-    if (!configExists(name)) return;
+    if (!configExists(name) && name !== "Default") return;
     localStorage.setItem("lastConfig", name);
 }
 

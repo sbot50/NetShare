@@ -30,6 +30,7 @@ function addHover(element) {
 }
 
 function startHover(element) {
+    if (element.classList.contains("disabled")) return;
     hover.style.display = "block";
     hover.innerHTML = element.dataset.hoverText || "";
     hover.style.left = element.getBoundingClientRect().left + "px";

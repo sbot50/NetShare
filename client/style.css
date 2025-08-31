@@ -75,6 +75,14 @@
     width: 24px;
     height: 24px;
   }
+
+  &.disabled {
+    cursor: default;
+
+    > img {
+      opacity: 0.35;
+    }
+  }
 }
 
 #controls {

@@ -70,23 +70,23 @@
     "advanced": false
   },
   "left_up": {
-    "input":    "${ctrl_0-axis_0}",
-    "negative": false,
+    "input":    "${ctrl_0-axis_1}",
+    "negative": true,
     "advanced": false
   },
   "left_down": {
-    "input":    "${ctrl_0-axis_0}",
-    "negative": true,
-    "advanced": false
-  },
-  "left_left": {
     "input":    "${ctrl_0-axis_1}",
     "negative": false,
     "advanced": false
   },
-  "left_right": {
-    "input":    "${ctrl_0-axis_1}",
+  "left_left": {
+    "input":    "${ctrl_0-axis_0}",
     "negative": true,
+    "advanced": false
+  },
+  "left_right": {
+    "input":    "${ctrl_0-axis_0}",
+    "negative": false,
     "advanced": false
   },
   "left_trigger": {
@@ -95,23 +95,23 @@
     "advanced": false
   },
   "right_up": {
-    "input":    "${ctrl_0-axis_2}",
-    "negative": false,
+    "input":    "${ctrl_0-axis_3}",
+    "negative": true,
     "advanced": false
   },
   "right_down": {
-    "input":    "${ctrl_0-axis_2}",
-    "negative": true,
-    "advanced": false
-  },
-  "right_left": {
     "input":    "${ctrl_0-axis_3}",
     "negative": false,
     "advanced": false
   },
-  "right_right": {
-    "input":    "${ctrl_0-axis_3}",
+  "right_left": {
+    "input":    "${ctrl_0-axis_2}",
     "negative": true,
+    "advanced": false
+  },
+  "right_right": {
+    "input":    "${ctrl_0-axis_2}",
+    "negative": false,
     "advanced": false
   },
   "right_trigger": {

@@ -1,6 +1,7 @@
 import init from "../init/controls.js"; //Dependency
-import translate from "../util/translate.js";
-import configUtils from "../util/config.js";
+import translate from "../../../res/util/translate.js";
+import configUtils from "../../../res/util/config.js";
+import buttons from "../../../res/util/buttons.js";
 let clickedButton;
 let ignore = false;
 let mouse_x;
@@ -81,6 +82,18 @@ async function unbindButton(button) {
 }
 
 function loadConfig() {
+    if (configUtils.current() === "Default") {
+        document.querySelectorAll("#controls .imageButton").forEach((img) => img.classList.add("disabled"));
+        document.querySelector("#rename").classList.add("disabled");
+        document.querySelector("#import").classList.add("disabled");
+        document.querySelector("#delete").classList.add("disabled");
+    } else {
+        document.querySelectorAll("#controls .imageButton").forEach((img) => img.classList.remove("disabled"));
+        document.querySelector("#rename").classList.remove("disabled");
+        document.querySelector("#import").classList.remove("disabled");
+        document.querySelector("#delete").classList.remove("disabled");
+    }
+
     const config = configUtils.get();
     const buttons = document.body.querySelectorAll("#controls .inputButton");
     buttons.forEach((button) => {
@@ -97,7 +110,7 @@ function setButton(button, value) {
         negative: value.negative,
         advanced: value.advanced,
     };
-    if (!value.input || (!value.input.match(/^\${.*?}$/) && !value.input.match(/^abs\(min\(0,\${.*?}\)\)$/) && !value.input.match(/^max\(0,\${.*?}\)$/) && !value.advanced)) {
+    if (!value.input || (!value.input.match(/^\${.*?}$/) && !value.input.match(/^(abs\(|)(min|max)\(0,\${.*?}\)(\)|)$/) && !value.advanced)) {
         button.textContent = "Unbound";
         button.dataset.value = "0";
     } else if (!value.advanced) {
@@ -106,19 +119,26 @@ function setButton(button, value) {
             .replace("}", "")
             .split("-");
         let buttonKey = splitKey[splitKey.length - 1];
-        if (buttonKey.startsWith("btn") || buttonKey.startsWith("axis")) {
+        if (buttonKey.startsWith("btn")) {
             const translated = translate.keyToButton(buttonKey);
             button.textContent = translated.label;
             button.dataset.value = value.input;
-            if (buttonKey.startsWith("axis") && value.negative)
-                button.textContent = translated.label
-                    .replace("Up", "Down")
-                    .replace("Left", "Right");
+        } else if ((value.input.match(/^(abs\(|)(min|max)\(0,\${.*?}\)(\)|)$/) || buttonKey.startsWith("axis_")) && buttonKey.includes("axis")) {
+            value.input = removeFluff(value.input);
+            buttonKey = removeFluff(buttonKey);
+            const translated = translate.keyToButton(buttonKey);
+            button.textContent = translated.label;
+            button.dataset.value = (value.negative) ? "abs(min(0," + value.input + "))" : "max(0," + value.input + ")";
+            if (!value.negative) {
+                button.textContent = button.textContent
+                    .replace("Stick Up", "Stick Down")
+                    .replace("Stick Left", "Stick Right");
+            }
         } else if (buttonKey.startsWith("key")) {
             const keyText = buttonKey.replace("key_", "");
             button.textContent = keyText.charAt(0).toUpperCase() + keyText.slice(1).toLowerCase() + " Key";
             button.dataset.value = value.input;
-        } else if (value.input.startsWith(`abs(min(0,\${mouse`) || value.input.startsWith(`max(0,\${mouse`) || value.input.startsWith(`\${mouse_`)) {
+        } else if ((value.input.match(/^(abs\(|)(min|max)\(0,\${.*?}\)(\)|)$/) || buttonKey.startsWith("mouse_")) && buttonKey.includes("mouse")) {
             value.input = removeFluff(value.input);
             buttonKey = removeFluff(buttonKey);
             const keyText = buttonKey.replace("mouse_", "");
@@ -208,6 +228,7 @@ function cancelBind(event) {
 }
 
 async function renameConfig() {
+    if (configUtils.current() === "Default") return;
     const name = prompt("Enter new config name");
     const option = document.querySelector(`#config option[value="${configUtils.current()}"]`);
     option.value = name;
@@ -223,6 +244,7 @@ async function importNewConfig() {
 }
 
 async function importConfig(name) {
+    if (name === "Default") return;
     const input = document.createElement("input");
     input.type = "file";
     input.accept = ".json";
@@ -274,5 +296,18 @@ async function deleteConfig() {
 }
 
 function checkGamepads() {
-
+    if (!clickedButton) return;
+    const gamepadButtons = buttons.get()["controller"];
+    for (const key of Object.keys(gamepadButtons)) {
+        if (gamepadButtons[key] > 0.75 || gamepadButtons[key] < -0.75) {
+            const value = {
+                input: `\${${key}}`,
+                negative: gamepadButtons[key] < 0,
+                advanced: false,
+            }
+            setButton(clickedButton, value);
+            clickedButton = null;
+            break;
+        }
+    }
 }
