@@ -118,16 +118,19 @@ function setButton(button, value) {
             .replace("${", "")
             .replace("}", "")
             .split("-");
+        let controllerKey = splitKey[0];
         let buttonKey = splitKey[splitKey.length - 1];
         if (buttonKey.startsWith("btn")) {
+            const controllerNum = controllerKey.split("ctrl_")[1];
             const translated = translate.keyToButton(buttonKey);
-            button.textContent = translated.label;
+            button.textContent = translated.label + " (" + controllerNum + ")";
             button.dataset.value = value.input;
         } else if ((value.input.match(/^(abs\(|)(min|max)\(0,\${.*?}\)(\)|)$/) || buttonKey.startsWith("axis_")) && buttonKey.includes("axis")) {
+            const controllerNum = controllerKey.split("ctrl_")[1];
             value.input = removeFluff(value.input);
             buttonKey = removeFluff(buttonKey);
             const translated = translate.keyToButton(buttonKey);
-            button.textContent = translated.label;
+            button.textContent = translated.label + " (" + controllerNum + ")";
             button.dataset.value = (value.negative) ? "abs(min(0," + value.input + "))" : "max(0," + value.input + ")";
             if (!value.negative) {
                 button.textContent = button.textContent
