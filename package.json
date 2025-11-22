@@ -6,7 +6,8 @@
   "license": "ISC",
   "description": "Website that allows people to play local multiplayer games from anywhere in the world.",
   "scripts": {
-    "start": "node index.mjs"
+    "start": "node index.mjs",
+    "postinstall": "node res/scripts/download-latest.mjs"
   },
   "dependencies": {
     "express": "latest"

@@ -1,4 +1,5 @@
 .idea/
 node_modules/
 configuration.json
-package-lock.json
+/res/scripts/fireshare-host-script
+/res/scripts/fireshare-host-script.exe
