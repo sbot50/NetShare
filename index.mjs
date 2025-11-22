@@ -4,6 +4,7 @@ const port = process.env.PORT;
 
 app.use("/", express.static("home"));
 app.use("/client", express.static("client"));
+app.use("/host", express.static("host"));
 
 app.use("/res", express.static("res"));
 

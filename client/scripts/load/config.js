@@ -6,6 +6,7 @@ let clickedButton;
 let ignore = false;
 let mouse_x;
 let mouse_y;
+let gamepadDefaults = {};
 
 document.addEventListener("keydown", (event) => keyPressed(event));
 document.addEventListener("mousemove", (event) => mouseMoved(event));
@@ -128,14 +129,22 @@ function setButton(button, value) {
         if (buttonKey.startsWith("btn")) {
             const controllerNum = controllerKey.split("ctrl_")[1];
             const translated = translate.keyToButton(buttonKey);
-            button.textContent = translated.label + " (" + controllerNum + ")";
+            if (translated && translated.label) {
+                button.textContent = translated.label + " (" + controllerNum + ")";
+            } else {
+                button.textContent = buttonKey + " (" + controllerNum + ")";
+            }
             button.dataset.value = value.input;
         } else if ((value.input.match(/^(abs\(|)(min|max)\(0,\${.*?}\)(\)|)$/) || buttonKey.startsWith("axis_")) && buttonKey.includes("axis")) {
             const controllerNum = controllerKey.split("ctrl_")[1];
             value.input = removeFluff(value.input);
             buttonKey = removeFluff(buttonKey);
             const translated = translate.keyToButton(buttonKey);
-            button.textContent = translated.label + " (" + controllerNum + ")";
+            if (translated && translated.label) {
+                button.textContent = translated.label + " (" + controllerNum + ")";
+            } else {
+                button.textContent = buttonKey + " (" + controllerNum + ")";
+            }
             button.dataset.value = (value.negative) ? "abs(min(0," + value.input + "))" : "max(0," + value.input + ")";
             if (!value.negative) {
                 button.textContent = button.textContent
@@ -307,7 +316,10 @@ function checkGamepads() {
     if (!clickedButton) return;
     const gamepadButtons = buttons.get()["controller"];
     for (const key of Object.keys(gamepadButtons)) {
-        if (gamepadButtons[key] > 0.75 || gamepadButtons[key] < -0.75) {
+        if (!Object.keys(gamepadDefaults).includes(key)) {
+            gamepadDefaults[key] = gamepadButtons[key];
+        }
+        if ((gamepadButtons[key] > 0.75 || gamepadButtons[key] < -0.75) && gamepadButtons[key] !== gamepadDefaults[key]) {
             const value = {
                 input: `\${${key}}`,
                 negative: gamepadButtons[key] < 0,

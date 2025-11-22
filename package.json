@@ -5,6 +5,9 @@
   "author": "sbot50",
   "license": "ISC",
   "description": "Website that allows people to play local multiplayer games from anywhere in the world.",
+  "scripts": {
+    "start": "node index.mjs"
+  },
   "dependencies": {
     "express": "latest"
   }
