@@ -106,6 +106,7 @@ export default new Promise(resolve => {
 
                 const inputContainer = document.createElement("div");
                 inputContainer.classList.add("inputContainer");
+                inputContainer.classList.add("deadzoneContainer");
                 inputContainer.style.gridArea = "inputdeadzone";
                 inputContainer.appendChild(input);
 

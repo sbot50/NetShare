@@ -2,6 +2,13 @@ import init from "../init/controls.js"; //Dependency
 import translate from "../../../res/util/translate.js";
 import configUtils from "../../../res/util/config.js";
 import buttons from "../../../res/util/buttons.js";
+import {
+    Modal,
+    TitleComponent,
+    InputFieldComponent,
+    ButtonComponent,
+    RowComponent
+} from "../../../res/util/modal.js";
 let clickedButton;
 let ignore = false;
 let mouse_x;
@@ -25,8 +32,7 @@ init.then(async () => {
 
     document.querySelector("#config").addEventListener("change", async () => {
         if (document.querySelector("#config").value === "New") {
-            await showAlert();
-            loadConfig();
+            showAlert();
         } else {
             configUtils.setCurrent(document.querySelector("#config").value);
             loadConfig();
@@ -43,19 +49,36 @@ init.then(async () => {
     setInterval(() => checkGamepads(), 1);
 });
 
-async function showAlert() {
-    const name = prompt("Enter config name");
-    if (name) {
-        configUtils.create(name);
+function showAlert() {
+    const modal = new Modal([
+        new TitleComponent("Create new config"),
+        new InputFieldComponent("name", "Enter config name"),
+        new RowComponent([
+            new ButtonComponent("Submit", () => {
+                const name = document.querySelector("#name").value;
+                if (name) {
+                    if (configUtils.exists(name)) {
+                        modal.error("Config with this name already exists!")
+                    } else {
+                        configUtils.create(name);
 
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        document.querySelector("#config").insertBefore(option, document.querySelector("#config").lastElementChild);
-        document.querySelector("#config").value = name;
-    } else {
-        document.querySelector("#config").value = configUtils.current();
-    }
+                        const option = document.createElement("option");
+                        option.value = name;
+                        option.textContent = name;
+                        document.querySelector("#config").insertBefore(option, document.querySelector("#config").lastElementChild);
+                        document.querySelector("#config").value = name;
+                        modal.close();
+                        loadConfig();
+                    }
+                }
+            }),
+            new ButtonComponent("Cancel", () => {
+                document.querySelector("#config").value = configUtils.current();
+                modal.close();
+            }, "#ff6969")
+        ])
+    ]);
+    modal.show();
 }
 
 async function changeButton(button) {
@@ -296,18 +319,55 @@ function cancelBind(event) {
 
 async function renameConfig() {
     if (configUtils.current() === "Default") return;
-    const name = prompt("Enter new config name");
-    const option = document.querySelector(`#config option[value="${configUtils.current()}"]`);
-    option.value = name;
-    option.textContent = name;
-    document.querySelector("#config").value = name;
-    configUtils.rename(name);
+    const modal = new Modal([
+        new TitleComponent("Rename config"),
+        new InputFieldComponent("name", "Enter new config name"),
+        new RowComponent([
+            new ButtonComponent("Submit", async () => {
+                const name = document.querySelector("#name").value;
+                if (name) {
+                    if (configUtils.getTxt(name) !== null) {
+                        modal.error("Config with this name already exists!")
+                    } else {
+                        const option = document.querySelector(`#config option[value="${configUtils.current()}"]`);
+                        option.value = name;
+                        option.textContent = name;
+                        document.querySelector("#config").value = name;
+                        configUtils.rename(name);
+                        modal.close();
+                    }
+                }
+            }),
+            new ButtonComponent("Cancel", () => {
+                modal.close();
+            }, "#ff6969")
+        ])
+    ]);
+    modal.show();
 }
 
 async function importNewConfig() {
-    const name = prompt("Enter config name");
-    if (!name || name === "Default" || configUtils.exists(name)) return;
-    await importConfig(name);
+    const modal = new Modal([
+        new TitleComponent("Import config as..."),
+        new InputFieldComponent("name", "Enter config name"),
+        new RowComponent([
+            new ButtonComponent("Submit", async () => {
+                const name = document.querySelector("#name").value;
+                if (name) {
+                    if (configUtils.getTxt(name) !== null) {
+                        modal.error("Config with this name already exists!")
+                    } else {
+                        await importConfig(name);
+                        modal.close();
+                    }
+                }
+            }),
+            new ButtonComponent("Cancel", () => {
+                modal.close();
+            }, "#ff6969")
+        ])
+    ]);
+    modal.show();
 }
 
 async function importConfig(name) {
