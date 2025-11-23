@@ -5,7 +5,7 @@ export default function interpolate() {
     const currentConfig = config.get();
     const activeInputs = buttons.get();
     for (const button of Object.keys(currentConfig)) {
-        let value = currentConfig[button].input;
+        let value = currentConfig[button].advanced ? currentConfig[button].input : "${" + currentConfig[button].key + "}";
         const keys = value.match(/\${(.*?)}/g) || [];
         for (let key of keys) {
             key = key.replace("${", "").replace("}", "");
@@ -18,9 +18,13 @@ export default function interpolate() {
             value = value.replace("${" + key + "}", keyValue.toString());
         }
         value = window.math.evaluate(value);
-        if (!button.startsWith("left_") && !button.startsWith("right_")) {
-            if (value > 0.75) value = 1;
-            else value = 0;
+        if (!currentConfig[button].advanced) {
+            if (currentConfig[button].negative && value > 0) value = 0;
+            if (!currentConfig[button].negative && value < 0) value = 0;
+            if (currentConfig[button].deadzone) {
+                if (currentConfig[button].negative && value > currentConfig[button].deadzone*-1) value = 0;
+                if (!currentConfig[button].negative && value < currentConfig[button].deadzone) value = 0;
+            }
         }
         inputMap[button] = value;
     }

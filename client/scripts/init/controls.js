@@ -49,6 +49,21 @@ export default new Promise(resolve => {
                 input.classList.add("inputButton");
                 input.dataset.key = categories[key].buttons[inputKey];
 
+                const advanced = document.createElement("input");
+                advanced.type = "text";
+                advanced.hidden = true;
+                advanced.classList.add("advancedInput");
+
+                const toggleAdvanced = document.createElement("button");
+                toggleAdvanced.classList.add("toggleAdvancedButton");
+                toggleAdvanced.classList.add("imageButton");
+                toggleAdvanced.classList.add("hover");
+                toggleAdvanced.dataset.hoverText = "Advanced";
+
+                const advancedImg = document.createElement("img");
+                advancedImg.src = "../res/images/advanced.svg";
+                toggleAdvanced.appendChild(advancedImg);
+
                 const unbind = document.createElement("button");
                 unbind.classList.add("unbindButton");
                 unbind.classList.add("imageButton");
@@ -60,6 +75,8 @@ export default new Promise(resolve => {
                 unbind.appendChild(img);
 
                 inputContainer.appendChild(input);
+                inputContainer.appendChild(advanced);
+                inputContainer.appendChild(toggleAdvanced);
                 inputContainer.appendChild(unbind);
 
                 container2.appendChild(label);

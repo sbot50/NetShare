@@ -65,10 +65,10 @@ function hostClose() {
 
 function controlsData(remote) {
     const controls = interpolate();
-    controls["left_y"] = controls["left_up"] + controls["left_down"] * -1;
-    controls["left_x"] = controls["left_left"] + controls["left_right"] * -1;
-    controls["right_y"] = controls["right_up"] + controls["right_down"] * -1;
-    controls["right_x"] = controls["right_left"] + controls["right_right"] * -1;
+    controls["left_y"] = Math.abs(controls["left_up"]) + Math.abs(controls["left_down"])*-1;
+    controls["left_x"] = Math.abs(controls["left_left"])*-1 + Math.abs(controls["left_right"]);
+    controls["right_y"] = Math.abs(controls["right_up"]) + Math.abs(controls["right_down"])*-1;
+    controls["right_x"] = Math.abs(controls["right_left"])*-1 + Math.abs(controls["right_right"]);
     delete controls["left_up"];
     delete controls["left_down"];
     delete controls["left_left"];
@@ -81,7 +81,26 @@ function controlsData(remote) {
     const data = {};
     for (const key of Object.keys(controls)) {
         if (controls[key] !== oldControls[key]) {
-            data[key] = controls[key];
+            if (
+                key === "left_y" ||
+                key === "left_x" ||
+                key === "right_y" ||
+                key === "right_x" ||
+                key === "left_trigger" ||
+                key === "right_trigger"
+            ) {
+                let value = controls[key];
+                if (key === "left_trigger" ||
+                    key === "right_trigger"
+                ) value = Math.abs(value);
+                data[key] = value;
+            }
+            else {
+                let value = Math.abs(controls[key]);
+                if (value > 0.75) value = 1;
+                else value = 0;
+                data[key] = value;
+            }
         }
     }
     oldControls = controls;

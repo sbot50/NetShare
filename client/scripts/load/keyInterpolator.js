@@ -23,27 +23,24 @@ init.then(async () => {
             const node = document.querySelector(`#${inputs[button.dataset.key].id}`);
             const sectionTitle = button.parentNode.parentNode.firstElementChild.textContent;
             const buttonTitle = button.parentNode.previousElementSibling.textContent;
-            if (sectionTitle === "Left Stick") {
-                value *= 0.5;
-                stickLeft.stick = document.querySelector(`#${inputs[button.dataset.key].id}`);
+            if (sectionTitle === "Left Stick" || sectionTitle === "Right Stick") {
+                const isLeft = sectionTitle === "Left Stick";
+                const stick = isLeft ? stickLeft : stickRight;
+
+                stick.stick = document.querySelector(`#${inputs[button.dataset.key].id}`);
+                value = Math.abs(value) * 0.5;
 
                 const buttonLabel = button.parentNode.previousElementSibling.textContent;
                 if (buttonLabel.includes("Down") || buttonLabel.includes("Stick Left")) value *= -1;
-                if (buttonLabel.includes("Up") || buttonLabel.includes("Down")) stickLeft.y -= value;
-                else stickLeft.x += value;
-            } else if (sectionTitle === "Right Stick") {
-                value *= 0.5;
-                stickRight.stick = document.querySelector(`#${inputs[button.dataset.key].id}`);
-
-                const buttonLabel = button.parentNode.previousElementSibling.textContent;
-                if (buttonLabel.includes("Down") || buttonLabel.includes("Stick Left")) value *= -1;
-                if (buttonLabel.includes("Up") || buttonLabel.includes("Down")) stickRight.y -= value;
-                else stickRight.x += value;
+                if (buttonLabel.includes("Up") || buttonLabel.includes("Down")) stick.y -= value;
+                else stick.x += value;
             } else if (buttonTitle === "Left Trigger" || buttonTitle === "Right Trigger") {
+                if (button.dataset.negative === "true" && button.hidden === false) value *= -1;
                 node.style.fillOpacity = `${value}`;
                 node.classList.add("pressed");
             } else {
-                if (value > 0.75) node.classList.add("pressed");
+                if (value > 0.75 && ((button.dataset.negative === "false" && button.hidden === false) || true)) node.classList.add("pressed");
+                else if (value < -0.75 && ((button.dataset.negative === "true" && button.hidden === false) || true)) node.classList.add("pressed");
                 else node.classList.remove("pressed");
             }
         });

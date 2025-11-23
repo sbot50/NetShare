@@ -21,6 +21,23 @@ function setConfigData(key, value) {
     localStorage.setItem("config_" + currentConfig(), JSON.stringify(config));
 }
 
+function setDeadzone(stick, value) {
+    if (currentConfig() === "Default") return;
+    
+    const config = getConfig();
+    const prefix = stick === 'left' ? 'left_' : 'right_';
+    const directions = ['up', 'down', 'left', 'right'];
+    
+    directions.forEach(direction => {
+        const key = prefix + direction;
+        if (config[key]) {
+            config[key] = { ...config[key], deadzone: value };
+        }
+    });
+
+    localStorage.setItem("config_" + currentConfig(), JSON.stringify(config));
+}
+
 function configExists(name) {
     return localStorage.getItem("config_" + name) !== null;
 }
@@ -59,6 +76,7 @@ export default {
     setCurrent: setCurrentConfig,
     current: currentConfig,
     set: setConfigData,
+    setDeadzone: setDeadzone,
     exists: configExists,
     rename: renameConfig,
     import: importConfig,

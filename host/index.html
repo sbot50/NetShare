@@ -2,14 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>NetShare - Host</title>
+    <link rel="stylesheet" href="./style.css">
     <script src="../res/libraries/peerjs.min.js"></script>
     <script src="./scripts/connect.js"></script>
 </head>
 <body>
-    <button id="connect">Connect</button>
+<div class="container">
+    <h1>NetShare - Host</h1>
+    <p class="subtitle">Configure your streaming settings</p>
+
+    <div class="options">
+        <div class="option-group">
+            <label for="stream">
+                <input type="checkbox" id="stream">
+                <span>Enable Stream</span>
+            </label>
+        </div>
+
+        <div class="option-group">
+            <label for="audio">
+                <input type="checkbox" id="audio" disabled>
+                <span>Enable Audio</span>
+            </label>
+        </div>
+
+        <div class="option-group">
+            <label for="fps">Frame Rate</label>
+            <select name="fps" id="fps" disabled>
+                <option value="30">30 FPS</option>
+                <option value="60" selected>60 FPS</option>
+                <option value="75">75 FPS</option>
+                <option value="90">90 FPS</option>
+                <option value="120">120 FPS</option>
+                <option value="144">144 FPS</option>
+                <option value="165">165 FPS</option>
+                <option value="180">180 FPS</option>
+                <option value="240">240 FPS</option>
+                <option value="source">Source</option>
+            </select>
+        </div>
+
+        <div class="option-group">
+            <label for="quality">Quality</label>
+            <select name="quality" id="quality" disabled>
+                <option value="144">144p (192x144)</option>
+                <option value="240">240p (320x240)</option>
+                <option value="360">360p (480x360)</option>
+                <option value="480">480p (720x480)</option>
+                <option value="720">720p (1280x720)</option>
+                <option value="1080" selected>1080p (1920x1080)</option>
+                <option value="1440">1440p (2560x1440)</option>
+                <option value="4k">4K (3840x2160)</option>
+                <option value="8k">8K (7680x4320)</option>
+                <option value="source">Source</option>
+            </select>
+        </div>
+
+        <div class="warning">⚠️ Anything above 1080p60 isn't recommended</div>
+
+        <div class="button-group">
+            <button id="connect">Connect</button>
+            <select name="script" id="script">
+                <option value="" disabled selected>Get Script</option>
+                <option value="linux">Linux</option>
+                <option value="windows">Windows</option>
+            </select>
+        </div>
+
+        <a href="/" class="back-link">← Back</a>
+    </div>
+</div>
 </body>
 </html>
