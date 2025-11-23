@@ -235,7 +235,7 @@ button:disabled {
   display: grid;
   width: 100%;
   text-align: left;
-  gap: 3px 8px;
+  gap: 2px 8px;
   grid-template-columns: 32% 1fr;
   background: #f9f9f9;
   border-radius: 8px;
