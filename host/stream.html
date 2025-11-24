@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>NetShare - Host Streaming</title>
+        <link rel="stylesheet" href="./css/streamstyle.css">
+        <script src="../res/libraries/peerjs.min.js"></script>
+        <script type="module" src="./scripts/stream.js"></script>
+    </head>
+    <body>
+        <div id="hoverBox">
+            <p id="id">ID: 1234</p>
+        </div>
+        <div class="container">
+            <div class="stream-preview">
+                <video id="localStream" autoplay muted></video>
+                <div class="stream-placeholder">
+                    <p>Stream Preview</p>
+                    <p class="placeholder-text">Enable stream to see preview</p>
+                </div>
+            </div>
+
+            <div class="connected-users">
+                <h2>Connected Users</h2>
+                <div id="users-list" class="users-list">
+                    <p class="no-users">No users connected yet</p>
+                </div>
+            </div>
+
+            <button id="stop" class="stop-button">Stop Streaming</button>
+        </div>
+    </body>
+</html>

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>NetShare - Host</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./css/style.css">
     <script src="../res/libraries/peerjs.min.js"></script>
-    <script src="./scripts/connect.js"></script>
+    <script src="./scripts/host.js"></script>
 </head>
 <body>
 <div class="container">
@@ -15,6 +15,11 @@
     <p class="subtitle">Configure your streaming settings</p>
 
     <div class="options">
+        <div class="option-group">
+            <label for="id">ID</label>
+            <input type="text" id="id" placeholder="Enter ID">
+        </div>
+
         <div class="option-group">
             <label for="stream">
                 <input type="checkbox" id="stream">
@@ -33,7 +38,7 @@
             <label for="fps">Frame Rate</label>
             <select name="fps" id="fps" disabled>
                 <option value="30">30 FPS</option>
-                <option value="60" selected>60 FPS</option>
+                <option value="60">60 FPS</option>
                 <option value="75">75 FPS</option>
                 <option value="90">90 FPS</option>
                 <option value="120">120 FPS</option>
@@ -41,7 +46,6 @@
                 <option value="165">165 FPS</option>
                 <option value="180">180 FPS</option>
                 <option value="240">240 FPS</option>
-                <option value="source">Source</option>
             </select>
         </div>
 
@@ -53,7 +57,7 @@
                 <option value="360">360p (480x360)</option>
                 <option value="480">480p (720x480)</option>
                 <option value="720">720p (1280x720)</option>
-                <option value="1080" selected>1080p (1920x1080)</option>
+                <option value="1080">1080p (1920x1080)</option>
                 <option value="1440">1440p (2560x1440)</option>
                 <option value="4k">4K (3840x2160)</option>
                 <option value="8k">8K (7680x4320)</option>
@@ -72,7 +76,7 @@
             </select>
         </div>
 
-        <a href="/" class="back-link">← Back</a>
+        <button class="back-link">← Back</button>
     </div>
 </div>
 </body>
