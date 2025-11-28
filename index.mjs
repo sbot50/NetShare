@@ -3,7 +3,12 @@ const app = express();
 const port = process.env.PORT;
 
 app.use("/", express.static("home"));
+
 app.use("/client", express.static("client"));
+app.get("/client/connect", (req, res) => {
+    res.sendFile("client/connect.html", { root: "." });
+});
+
 app.use("/host", express.static("host"));
 app.get("/host/stream", (req, res) => {
     res.sendFile("host/stream.html", { root: "." });

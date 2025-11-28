@@ -227,10 +227,6 @@ button:disabled {
   background: #764ba2;
 }
 
-.padded {
-  padding: 12px;
-}
-
 .controlsContainer {
   display: grid;
   width: 100%;

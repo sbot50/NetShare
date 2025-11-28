@@ -1,30 +1,40 @@
-import init from "../init/controls.js"; //Dependency
 import interpolate from "../../../res/util/interpolator.js";
+
+const id = encodeURIComponent(localStorage.getItem("clientID"));
+const nickname = localStorage.getItem("nickname");
+
+let remote;
 let oldControls = {};
+let properDisconnect = false;
+let stoppedDisconnect = false;
+let peer;
+let pageLoadTime = Date.now();
 
-init.then(() => {
-    document.querySelector("#connect").addEventListener("click", () => connect());
-});
+document.querySelector("#disconnect").addEventListener("click", () => disconnect());
 
-function connect() {
-    document.querySelector("#body").style.display = "none";
-    document.querySelector(".sidebar").style.display = "none";
-    document.querySelector("#streamContainer").classList.add("open");
-
-    const peer = webrtc();
-    peer.on("open", () => clientOpen(peer));
-    peer.on("call", (call) => clientCall(call));
+async function disconnect() {
+    remote.send({
+        rtype: "disconnect"
+    });
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    location.href = "/client";
 }
 
-function webrtc() {
+connect();
+
+function connect() {
     const hash = Math.random().toFixed(6).substring(2);
-    const id = encodeURIComponent(localStorage.getItem("clientID"));
-    return new Peer('fireshare-' + hash + "-" + id);
+    peer = new Peer('fireshare-' + hash + "-" + encodeURIComponent(nickname) + "-" + id);
+    peer.on("open", () => clientOpen(peer));
+    peer.on("call", (call) => handleIncomingCall(call));
+    peer.on("error", (err) => {
+        console.error("Peer error:", err);
+        hostClose();
+    });
 }
 
 function clientOpen(local) {
-    const id = encodeURIComponent(localStorage.getItem("clientID"));
-    const remote = local.connect("fireshare-" + id);
+    remote = local.connect("fireshare-" + id);
     remote.on("open", () => hostOpen(remote));
     remote.on("data", (data) => hostData(remote, data));
     remote.on("close", () => hostClose());
@@ -34,16 +44,19 @@ function clientOpen(local) {
     });
 }
 
-function clientCall(call) {
-    const vid = document.querySelector("#remoteVideo");
-    vid.style.display = "block";
-
-    call.on("stream", (stream) => vid.srcObject = stream);
+function handleIncomingCall(call) {
     call.answer();
+    call.on("stream", (stream) => {
+        const videoElement = document.getElementById("localStream");
+        videoElement.srcObject = stream;
+        document.querySelector(".stream-placeholder").style.display = "none";
+    });
+    call.on("error", (err) => {
+        console.error("Call error:", err);
+    });
 }
 
 function hostOpen(remote) {
-    const nickname = localStorage.getItem("nickname");
     remote.send({
         rtype: "connect",
         nickname: nickname
@@ -53,30 +66,32 @@ function hostOpen(remote) {
 }
 
 function hostData(remote, data) {
-    if (data.type === "ping") {
-        const ping = Date.now() - data.timestamp;
-        console.log("Ping: " + ping + "ms");
+    if (data.rtype === "ping") {
+        remote.send({
+            rtype: "pong"
+        });
+    }
+    else if (data.rtype === "disconnect") {
+        properDisconnect = true;
+        stoppedDisconnect = data.stopped;
     }
 }
 
 function hostClose() {
-    location.reload();
+    if (peer) {
+        peer.destroy();
+    }
+
+    const timeSinceLoad = Date.now() - pageLoadTime;
+    if (timeSinceLoad < 500) {
+        location.href = "/client?nohost=true";
+    } else {
+        location.href = "/client?disconnected=true&proper=" + properDisconnect + "&stopped=" + stoppedDisconnect;
+    }
 }
 
 function controlsData(remote) {
-    const controls = interpolate();
-    controls["left_y"] = Math.abs(controls["left_up"]) + Math.abs(controls["left_down"])*-1;
-    controls["left_x"] = Math.abs(controls["left_left"])*-1 + Math.abs(controls["left_right"]);
-    controls["right_y"] = Math.abs(controls["right_up"]) + Math.abs(controls["right_down"])*-1;
-    controls["right_x"] = Math.abs(controls["right_left"])*-1 + Math.abs(controls["right_right"]);
-    delete controls["left_up"];
-    delete controls["left_down"];
-    delete controls["left_left"];
-    delete controls["left_right"];
-    delete controls["right_up"];
-    delete controls["right_down"];
-    delete controls["right_left"];
-    delete controls["right_right"];
+    const controls = calcSticks(interpolate());
 
     const data = {};
     for (const key of Object.keys(controls)) {
@@ -111,4 +126,20 @@ function controlsData(remote) {
             data: data
         });
     }
+}
+
+function calcSticks(controls) {
+    controls["left_y"] = Math.abs(controls["left_up"]) + Math.abs(controls["left_down"])*-1;
+    controls["left_x"] = Math.abs(controls["left_left"])*-1 + Math.abs(controls["left_right"]);
+    controls["right_y"] = Math.abs(controls["right_up"]) + Math.abs(controls["right_down"])*-1;
+    controls["right_x"] = Math.abs(controls["right_left"])*-1 + Math.abs(controls["right_right"]);
+    delete controls["left_up"];
+    delete controls["left_down"];
+    delete controls["left_left"];
+    delete controls["left_right"];
+    delete controls["right_up"];
+    delete controls["right_down"];
+    delete controls["right_left"];
+    delete controls["right_right"];
+    return controls;
 }

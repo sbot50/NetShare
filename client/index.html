@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NetShare - Client</title>
-    <script src="../res/libraries/peerjs.min.js"></script>
     <script src="../res/libraries/math.min.js"></script>
 
     <!--  Init  -->
+    <script type="module" src="scripts/init/disconnected.js"></script>
+    <script type="module" src="scripts/init/connectbutton.js"></script>
     <script src="scripts/init/hover.js"></script>
     <script src="scripts/init/controller.js"></script>
     <script src="scripts/init/backbutton.js"></script>
@@ -19,11 +20,8 @@
     <script type="module" src="scripts/load/id.js"></script>
     <script type="module" src="scripts/load/inputView.js"></script>
 
-    <!--  Connect  -->
-    <script type="module" src="scripts/connect/connect.js"></script>
-
-    <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./modal.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/modal.css">
 </head>
 <body>
     <button id="backButton" title="Go back">
@@ -73,9 +71,6 @@
                 <p class="title">Controller</p>
             </div>
         </div>
-    </div>
-    <div id="streamContainer">
-        <video id="remoteVideo" autoplay></video>
     </div>
     <div id="hover"></div>
 </body>
