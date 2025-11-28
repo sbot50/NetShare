@@ -49,6 +49,7 @@ function handleIncomingCall(call) {
     call.on("stream", (stream) => {
         const videoElement = document.getElementById("localStream");
         videoElement.srcObject = stream;
+        videoElement.style.display = "block";
         document.querySelector(".stream-placeholder").style.display = "none";
     });
     call.on("error", (err) => {

@@ -9,11 +9,20 @@ const id = localStorage.getItem("host-id");
 const stream = localStorage.getItem("stream") === "true";
 const audio = localStorage.getItem("audio") === "true";
 const fps = localStorage.getItem("fps") || "60";
-const quality = localStorage.getItem("quality") || "1080";
+const quality = localStorage.getItem("quality") || "1920x1080";
+const width = quality.split("x")[0];
+const height = quality.split("x")[1];
 
 let connectedUsers = new Map();
+let removedUsers = [];
+let hostStream;
+let audioTracks = [];
 
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("beforeunload", () => {
+    audioTracks.forEach(t => t.stop());
+});
+
+document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("id").textContent = "ID: " + id;
 
     let websocket = new WebSocket("ws://127.0.0.1:6731");
@@ -22,8 +31,77 @@ document.addEventListener("DOMContentLoaded", () => {
     const peer = new Peer("fireshare-" + id);
 
     document.querySelector("#stop").addEventListener("click", () => stopStreaming(peer, websocket));
+
+    const startButton = document.getElementById("start-stream");
+
+    if (stream) {
+        document.getElementById("placeholder-text").style.display = "none";
+        startButton.style.display = "block";
+        startButton.addEventListener("click", () => getStream(peer));
+    }
+
     initializeStreaming(peer, websocket);
 });
+
+async function getStream(peer) {
+    try {
+        if (audio) {
+            let audioStream = await navigator.mediaDevices.getUserMedia({
+                audio: {
+                    autoGainControl: false,
+                    channelCount: 2,
+                    echoCancellation: false,
+                    latency: 0,
+                    noiseSuppression: false,
+                    sampleRate: 48000,
+                    sampleSize: 16,
+                    volume: 1.0,
+                },
+            });
+            audioTracks = audioStream.getAudioTracks();
+        }
+
+        const videoConstraints = {
+            displaySurface: "monitor"
+        };
+        if (quality !== "source") {
+            videoConstraints.width = { ideal: width };
+            videoConstraints.height = { ideal: height };
+        }
+        if (fps !== "source") {
+            videoConstraints.fps = { ideal: fps };
+        }
+        const constraints = {
+            video: videoConstraints,
+            audio: true,
+            systemAudio: "include",
+            windowAudio: "include"
+        };
+
+        hostStream = await navigator.mediaDevices.getDisplayMedia(constraints);
+        for (let track of audioTracks) {
+            hostStream.addTrack(track);
+        }
+
+        const videoElement = document.getElementById("localStream");
+        videoElement.srcObject = hostStream;
+
+        document.querySelector(".stream-placeholder").style.display = "none";
+        document.getElementById("localStream").style.display = "block";
+        await sendStream(peer);
+    } catch (error) {
+        console.error("Error accessing media devices:", error);
+        const notif = new Notification("Couldn't access camera", NotifType.ERROR, 5, NotifPlacement.TOP_MIDDLE);
+        notif.show();
+    }
+}
+
+async function sendStream(peer) {
+    for (let user of connectedUsers) {
+        user = user[1];
+        peer.call(user.connection.peer, hostStream)
+    }
+}
 
 function errorNotif() {
     const notif = new Notification("Couldn't connect to websocket", NotifType.ERROR, 5, NotifPlacement.TOP_MIDDLE);
@@ -61,7 +139,7 @@ async function stopStreaming(peer, websocket) {
 
 function initializeStreaming(peer, websocket) {
     peer.on("connection", (client) => {
-        client.on("data", (data) => handleClientData(websocket, client, data));
+        client.on("data", (data) => handleClientData(peer, websocket, client, data));
         client.on("close", () => handleClientClose(websocket, client));
         startHeartbeat(websocket, client);
     });
@@ -71,8 +149,8 @@ function handleClientClose(websocket, client) {
     removeUser(client.label);
 }
 
-function handleClientData(websocket, client, data) {
-    if (data.rtype === "connect") addUser(client, client.label, data.nickname);
+function handleClientData(peer, websocket, client, data) {
+    if (data.rtype === "connect") addUser(peer, client, client.label, data.nickname);
     else if (data.rtype === "disconnect") handleDisconnect(websocket, client);
     else if (data.rtype === "controls") handleControls(websocket, client.label, data.controls);
     else if (data.rtype === "pong") handlePong(client.label);
@@ -107,27 +185,33 @@ function handlePong(userId) {
     }
 }
 
-function addUser(connection, userId, nickname) {
+function addUser(peer, connection, userId, nickname) {
+    if (hostStream) {
+        peer.call(connection.peer, hostStream);
+    }
     nickname = nickname || "Anonymous";
     connectedUsers.set(userId, { nickname,  connection, properDisconnect: false });
     updateUsersList();
 }
 
 function handleDisconnect(websocket, client) {
+    if (removedUsers.includes(client.label)) return;
     connectedUsers.get(client.label).properDisconnect = true;
     removeUser(client.label);
 }
 
-function removeUser(userId) {
+function removeUser(userId, noNotif) {
     if (connectedUsers.has(userId)) {
         clearInterval(connectedUsers.get(userId).interval);
         clearTimeout(connectedUsers.get(userId).timeout);
-        if (connectedUsers.get(userId).properDisconnect) {
-            const notif = new Notification("User " + connectedUsers.get(userId).nickname + " disconnected", NotifType.INFO, 5, NotifPlacement.BOTTOM_RIGHT);
-            notif.show();
-        } else {
-            const notif = new Notification("Connection with user " + connectedUsers.get(userId).nickname + " lost", NotifType.ERROR, 5, NotifPlacement.TOP_MIDDLE);
-            notif.show();
+        if (noNotif !== true) {
+            if (connectedUsers.get(userId).properDisconnect) {
+                const notif = new Notification("User " + connectedUsers.get(userId).nickname + " disconnected", NotifType.INFO, 5, NotifPlacement.BOTTOM_RIGHT);
+                notif.show();
+            } else {
+                const notif = new Notification("Connection with user " + connectedUsers.get(userId).nickname + " lost", NotifType.ERROR, 5, NotifPlacement.TOP_MIDDLE);
+                notif.show();
+            }
         }
         connectedUsers.delete(userId);
         updateUsersList();
@@ -161,6 +245,7 @@ function updateUsersList() {
 }
 
 window.disconnectUser = async (userId) => {
+    removedUsers.push(userId);
     const user = connectedUsers.get(userId);
     if (user && user.connection) {
         user.connection.send({
