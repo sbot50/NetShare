@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>NetShare - Client Connected</title>
+    <link rel="stylesheet" href="./css/connect.css">
+    <script src="../res/libraries/peerjs.min.js"></script>
+    <script src="../res/libraries/math.min.js"></script>
+    <script type="module" src="./scripts/connect/connect.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="stream-preview">
+            <video id="localStream" autoplay muted></video>
+            <div class="stream-placeholder">
+                <p>Stream Preview</p>
+                <p class="placeholder-text">Host is not streaming video</p>
+            </div>
+        </div>
+
+        <button id="disconnect" class="disconnect-button">Disconnect</button>
+    </div>
+</body>
+</html>

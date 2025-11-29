@@ -1,0 +1,122 @@
+{
+  "a": {
+    "label": "A",
+    "internal": "a",
+    "id": "button_a"
+  },
+  "b": {
+    "label": "B",
+    "internal": "b",
+    "id": "button_b"
+  },
+  "x": {
+    "label": "X",
+    "internal": "x",
+    "id": "button_x"
+  },
+  "y": {
+    "label": "Y",
+    "internal": "y",
+    "id": "button_y"
+  },
+  "l1": {
+    "label": "Left Bumper",
+    "internal": "l1",
+    "id": "left_shoulder"
+  },
+  "l3": {
+    "label": "Left Stick",
+    "internal": "l3",
+    "id": "left_stick"
+  },
+  "r1": {
+    "label": "Right Bumper",
+    "internal": "r1",
+    "id": "right_shoulder"
+  },
+  "r3": {
+    "label": "Right Stick",
+    "internal": "r3",
+    "id": "right_stick"
+  },
+  "up": {
+    "label": "Up",
+    "internal": "up",
+    "id": "dpad_up"
+  },
+  "down": {
+    "label": "Down",
+    "internal": "down",
+    "id": "dpad_down"
+  },
+  "left": {
+    "label": "Left",
+    "internal": "left",
+    "id": "dpad_left"
+  },
+  "right": {
+    "label": "Right",
+    "internal": "right",
+    "id": "dpad_right"
+  },
+  "minus": {
+    "label": "Select",
+    "internal": "minus",
+    "id": "button_minus"
+  },
+  "plus": {
+    "label": "Start",
+    "internal": "plus",
+    "id": "button_plus"
+  },
+  "left_up": {
+    "label": "Left Stick Up",
+    "internal": "left_up",
+    "id": "left_stick"
+  },
+  "left_down": {
+    "label": "Left Stick Down",
+    "internal": "left_down",
+    "id": "left_stick"
+  },
+  "left_left": {
+    "label": "Left Stick Left",
+    "internal": "left_left",
+    "id": "left_stick"
+  },
+  "left_right": {
+    "label": "Left Stick Right",
+    "internal": "left_right",
+    "id": "left_stick"
+  },
+  "left_trigger": {
+    "label": "Left Trigger",
+    "internal": "left_trigger",
+    "id": "left_trigger"
+  },
+  "right_up": {
+    "label": "Right Stick Up",
+    "internal": "right_up",
+    "id": "right_stick"
+  },
+  "right_down": {
+    "label": "Right Stick Down",
+    "internal": "right_down",
+    "id": "right_stick"
+  },
+  "right_left": {
+    "label": "Right Stick Left",
+    "internal": "right_left",
+    "id": "right_stick"
+  },
+  "right_right": {
+    "label": "Right Stick Right",
+    "internal": "right_right",
+    "id": "right_stick"
+  },
+  "right_trigger": {
+    "label": "Right Trigger",
+    "internal": "right_trigger",
+    "id": "right_trigger"
+  }
+}

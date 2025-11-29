@@ -1,0 +1,154 @@
+{
+  "a": {
+    "key":      "ctrl_0-btn_0",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "b": {
+    "key":      "ctrl_0-btn_1",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "x": {
+    "key":      "ctrl_0-btn_2",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "y": {
+    "key":      "ctrl_0-btn_3",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "l1": {
+    "key":      "ctrl_0-btn_4",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "r1": {
+    "key":      "ctrl_0-btn_5",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "minus": {
+    "key":      "ctrl_0-btn_8",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "plus": {
+    "key":      "ctrl_0-btn_9",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "l3": {
+    "key":      "ctrl_0-btn_10",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "r3": {
+    "key":      "ctrl_0-btn_11",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "up": {
+    "key":      "ctrl_0-btn_12",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "down": {
+    "key":      "ctrl_0-btn_13",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "left": {
+    "key":      "ctrl_0-btn_14",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "right": {
+    "key":      "ctrl_0-btn_15",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "left_up": {
+    "key":      "ctrl_0-axis_1",
+    "negative": true,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "left_down": {
+    "key":      "ctrl_0-axis_1",
+    "negative": false,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "left_left": {
+    "key":      "ctrl_0-axis_0",
+    "negative": true,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "left_right": {
+    "key":      "ctrl_0-axis_0",
+    "negative": false,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "left_trigger": {
+    "key":      "ctrl_0-btn_6",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  },
+  "right_up": {
+    "key":      "ctrl_0-axis_3",
+    "negative": true,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "right_down": {
+    "key":      "ctrl_0-axis_3",
+    "negative": false,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "right_left": {
+    "key":      "ctrl_0-axis_2",
+    "negative": true,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "right_right": {
+    "key":      "ctrl_0-axis_2",
+    "negative": false,
+    "deadzone": 0.1,
+    "input":    "",
+    "advanced": false
+  },
+  "right_trigger": {
+    "key":      "ctrl_0-btn_7",
+    "negative": false,
+    "input":    "",
+    "advanced": false
+  }
+}

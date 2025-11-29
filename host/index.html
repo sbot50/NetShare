@@ -1,35 +1,84 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FireShare - Host</title>
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
-    <script src="./scripts/index.js" type="module" defer></script>
-    <link rel="stylesheet" href="./style.css" />
-  </head>
-  <body>
-    <div id="body">
-      <div>
-        <label>Stream: </label>
-        <input id="stream" type="checkbox" /><br />
-        <label>FPS: </label>
-        <input id="fps" type="number" value="30" disabled="" /><br />
-        <label>Height: </label>
-        <input id="height" type="number" value="720" disabled="" /><br />
-      </div>
-      <div>
-        <button id="getScriptBtn">Get Script</button>
-        <button id="shareBtn">Share</button>
-      </div>
-    </div>
-    <div id="streamContainer">
-        <h1 id="streamTitle">Streaming!</h1>
-        <video id="localVideo" autoplay></video>
-        <div id="connections">
-            <h2>Connections</h2>
-            <div id="connectionList"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>NetShare - Host</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="../res/libraries/peerjs.min.js"></script>
+    <script src="./scripts/host.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>NetShare - Host</h1>
+    <p class="subtitle">Configure your streaming settings</p>
+
+    <div class="options">
+        <div class="option-group">
+            <label for="id">ID</label>
+            <input type="text" id="id" placeholder="Enter ID">
         </div>
+
+        <div class="option-group">
+            <label for="stream">
+                <input type="checkbox" id="stream">
+                <span>Enable Stream</span>
+            </label>
+        </div>
+
+        <div class="option-group">
+            <label for="audio">
+                <input type="checkbox" id="audio" disabled>
+                <span>Enable Audio</span>
+            </label>
+        </div>
+
+        <div class="option-group">
+            <label for="fps">Frame Rate</label>
+            <select name="fps" id="fps" disabled>
+                <option value="30">30 FPS</option>
+                <option value="60">60 FPS</option>
+                <option value="75">75 FPS</option>
+                <option value="90">90 FPS</option>
+                <option value="120">120 FPS</option>
+                <option value="144">144 FPS</option>
+                <option value="165">165 FPS</option>
+                <option value="180">180 FPS</option>
+                <option value="240">240 FPS</option>
+                <option value="source">Source</option>
+            </select>
+        </div>
+
+        <div class="option-group">
+            <label for="quality">Quality</label>
+            <select name="quality" id="quality" disabled>
+                <option value="192x144">144p (192x144)</option>
+                <option value="320x240">240p (320x240)</option>
+                <option value="480x360">360p (480x360)</option>
+                <option value="720x480">480p (720x480)</option>
+                <option value="1280x720">720p (1280x720)</option>
+                <option value="1920x1080">1080p (1920x1080)</option>
+                <option value="2560x1440">1440p (2560x1440)</option>
+                <option value="3840x2160">4K (3840x2160)</option>
+                <option value="7680x4320">8K (7680x4320)</option>
+                <option value="source">Source</option>
+            </select>
+        </div>
+
+        <div class="warning">⚠️ Anything above 1080p60 isn't recommended</div>
+
+        <div class="button-group">
+            <button id="connect">Connect</button>
+            <select name="script" id="script">
+                <option value="" disabled selected>Get Script</option>
+                <option value="linux">Linux</option>
+                <option value="windows">Windows</option>
+            </select>
+        </div>
+
+        <button class="back-link">← Back</button>
     </div>
-  </body>
+</div>
+</body>
 </html>
