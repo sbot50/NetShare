@@ -65,11 +65,11 @@ async function getStream(peer) {
             displaySurface: "monitor"
         };
         if (quality !== "source") {
-            videoConstraints.width = { ideal: width };
-            videoConstraints.height = { ideal: height };
+            videoConstraints.width = { ideal: parseInt(width) };
+            videoConstraints.height = { ideal: parseInt(height) };
         }
         if (fps !== "source") {
-            videoConstraints.fps = { ideal: fps };
+            videoConstraints.fps = { ideal: parseInt(fps) };
         }
         const constraints = {
             video: videoConstraints,
