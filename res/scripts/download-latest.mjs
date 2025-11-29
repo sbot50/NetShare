@@ -8,7 +8,7 @@ const currentDir = path.join(process.cwd(), "res", "scripts");
 try {
     await cleanDirectory(currentDir);
 
-    const release = await fetchUrl("https://forgejo.tail12316.ts.net/api/v1/repos/username/fireshare-host-script/releases/latest");
+    const release = await fetchUrl("https://forgejo.tail12316.ts.net/api/v1/repos/username/netshare-host-script/releases/latest");
 
     for (const asset of release.assets) {
         const destPath = path.join(currentDir, asset.name);

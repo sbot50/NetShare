@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let websocket = new WebSocket("ws://127.0.0.1:6731");
     websocket.onerror = errorNotif;
 
-    const peer = new Peer("fireshare-" + id);
+    const peer = new Peer("netshare-" + id);
 
     document.querySelector("#stop").addEventListener("click", () => stopStreaming(peer, websocket));
 
