@@ -17,6 +17,14 @@ body {
     gap: 20px;
     height: 100vh;
     padding: 20px;
+
+    &.fullscreen {
+        padding: 0;
+
+        > .stream-preview {
+            border-radius: 0;
+        }
+    }
 }
 
 .stream-preview {

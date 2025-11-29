@@ -84,7 +84,7 @@ function hostClose() {
     }
 
     const timeSinceLoad = Date.now() - pageLoadTime;
-    if (timeSinceLoad < 500) {
+    if (timeSinceLoad < 5000) {
         location.href = "/client?nohost=true";
     } else {
         location.href = "/client?disconnected=true&proper=" + properDisconnect + "&stopped=" + stoppedDisconnect;
@@ -130,9 +130,9 @@ function controlsData(remote) {
 }
 
 function calcSticks(controls) {
-    controls["left_y"] = Math.abs(controls["left_up"]) + Math.abs(controls["left_down"])*-1;
+    controls["left_y"] = Math.abs(controls["left_up"])*-1 + Math.abs(controls["left_down"]);
     controls["left_x"] = Math.abs(controls["left_left"])*-1 + Math.abs(controls["left_right"]);
-    controls["right_y"] = Math.abs(controls["right_up"]) + Math.abs(controls["right_down"])*-1;
+    controls["right_y"] = Math.abs(controls["right_up"])*-1 + Math.abs(controls["right_down"]);
     controls["right_x"] = Math.abs(controls["right_left"])*-1 + Math.abs(controls["right_right"]);
     delete controls["left_up"];
     delete controls["left_down"];

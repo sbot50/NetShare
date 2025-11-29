@@ -111,7 +111,7 @@ async function sendStream(peer) {
 }
 
 function errorNotif() {
-    const notif = new Notification("Couldn't connect to websocket", NotifType.ERROR, 5, NotifPlacement.TOP_MIDDLE);
+    const notif = new Notification("Couldn't connect to host script", NotifType.ERROR, 5, NotifPlacement.TOP_MIDDLE);
     notif.show();
 }
 
