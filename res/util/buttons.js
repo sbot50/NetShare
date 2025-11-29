@@ -7,6 +7,8 @@ document.addEventListener("mousemove", (event) => mouseMoved(event));
 document.addEventListener("mousedown", (event) => mouseDown(event));
 document.addEventListener("mouseup", (event) => mouseUp(event));
 
+setInterval(mouseDecay, 10);
+
 function get() {
     return {
         "keyboard": kb_keys,
@@ -45,8 +47,22 @@ function keyUp(event) {
 }
 
 function mouseMoved(event) {
-    mouse["mouse_x"] = (event.clientX - window.innerWidth/2)/(window.innerWidth/2);
-    mouse["mouse_y"] = (event.clientY - window.innerHeight/2)/(window.innerHeight/2);
+    if (document.pointerLockElement !== null) {
+        mouse["mouse_x"] += event.movementX * 0.005;
+        mouse["mouse_y"] += event.movementY * 0.005;
+        mouse["mouse_x"] = Math.max(-1, Math.min(1, mouse["mouse_x"]));
+        mouse["mouse_y"] = Math.max(-1, Math.min(1, mouse["mouse_y"]));
+    } else {
+        mouse["mouse_x"] = (event.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+        mouse["mouse_y"] = (event.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
+    }
+}
+
+function mouseDecay() {
+    if (document.pointerLockElement !== null) {
+        mouse["mouse_x"] *= 0.9;
+        mouse["mouse_y"] *= 0.9;
+    }
 }
 
 function mouseDown(event) {
