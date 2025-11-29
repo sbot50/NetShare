@@ -63,14 +63,16 @@ button {
 }
 
 button:first-child {
-    background: white;
-    color: #667eea;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
 }
 
 button:first-child:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 button:first-child:active {
@@ -78,16 +80,14 @@ button:first-child:active {
 }
 
 button:last-child {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(10px);
+    background: white;
+    color: #667eea;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 button:last-child:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border-color: rgba(255, 255, 255, 0.5);
     transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 button:last-child:active {

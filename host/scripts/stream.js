@@ -24,6 +24,7 @@ window.addEventListener("beforeunload", () => {
 
 document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("id").textContent = "ID: " + id;
+    document.getElementById("copy").addEventListener("click", () => copyId(id));
 
     let websocket = new WebSocket("ws://127.0.0.1:6731");
     websocket.onerror = errorNotif;
@@ -42,6 +43,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     initializeStreaming(peer, websocket);
 });
+
+function copyId(id) {
+    navigator.clipboard.writeText(id);
+    const notif = new Notification("ID copied to clipboard", NotifType.SUCCESS, 5, NotifPlacement.BOTTOM_RIGHT);
+    notif.show();
+}
 
 async function getStream(peer) {
     try {
