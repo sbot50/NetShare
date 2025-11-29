@@ -204,7 +204,6 @@ button:disabled {
   height: 100%;
   gap: 16px;
   overflow-y: auto;
-  padding-right: 8px;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: max-content;
 }
@@ -235,7 +234,7 @@ button:disabled {
   grid-template-columns: 32% 1fr;
   background: #f9f9f9;
   border-radius: 8px;
-  padding: 12px;
+  padding: 8px;
 }
 
 .controlsContainer > h2 {

@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stream = localStorage.getItem("stream") === "true";
     const audio = localStorage.getItem("audio") === "true";
     const fps = localStorage.getItem("fps") || "60";
-    const quality = localStorage.getItem("quality") || "1080";
+    const quality = localStorage.getItem("quality") || "1920x1080";
     localStorage.setItem("host-id", id);
     localStorage.setItem("quality", quality);
     localStorage.setItem("fps", fps);
