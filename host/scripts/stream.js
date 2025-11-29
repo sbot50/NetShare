@@ -74,8 +74,8 @@ async function getStream(peer) {
         const constraints = {
             video: videoConstraints,
             audio: true,
-            systemAudio: "include",
-            windowAudio: "include"
+            // systemAudio: "include",
+            // windowAudio: "include"
         };
 
         hostStream = await navigator.mediaDevices.getDisplayMedia(constraints);
@@ -140,20 +140,18 @@ async function stopStreaming(peer, websocket) {
 function initializeStreaming(peer, websocket) {
     peer.on("connection", (client) => {
         client.on("data", (data) => handleClientData(peer, websocket, client, data));
-        client.on("close", () => handleClientClose(websocket, client));
-        startHeartbeat(websocket, client);
+        client.on("close", () => handleDisconnect(client));
     });
 }
 
-function handleClientClose(websocket, client) {
-    removeUser(client.label);
-}
-
 function handleClientData(peer, websocket, client, data) {
-    if (data.rtype === "connect") addUser(peer, client, client.label, data.nickname);
-    else if (data.rtype === "disconnect") handleDisconnect(websocket, client);
-    else if (data.rtype === "controls") handleControls(websocket, client.label, data.controls);
+    if (data.rtype === "connect") addUser(peer, websocket, client, client.label, data.nickname);
+    else if (data.rtype === "disconnect") handleDisconnect(client);
     else if (data.rtype === "pong") handlePong(client.label);
+    if (data.rtype === "connect" || data.rtype === "disconnect" || data.rtype === "controls") {
+        data.id = client.label;
+        websocket.send(JSON.stringify(data));
+    }
 }
 
 function startHeartbeat(websocket, client) {
@@ -169,12 +167,12 @@ function startHeartbeat(websocket, client) {
 
         const timeout = setTimeout(() => {
             handleClientClose(websocket, client);
-        }, 2000);
+        }, 1000);
 
         if (connectedUsers.has(userId)) {
             connectedUsers.get(userId).timeout = timeout;
         }
-    }, 1000);
+    }, 500);
 
     connectedUsers.get(userId).interval = interval;
 }
@@ -185,22 +183,24 @@ function handlePong(userId) {
     }
 }
 
-function addUser(peer, connection, userId, nickname) {
+function addUser(peer, websocket, connection, userId, nickname) {
     if (hostStream) {
         peer.call(connection.peer, hostStream);
     }
     nickname = nickname || "Anonymous";
     connectedUsers.set(userId, { nickname,  connection, properDisconnect: false });
     updateUsersList();
+    startHeartbeat(websocket, connection);
 }
 
-function handleDisconnect(websocket, client) {
+function handleDisconnect(client) {
     if (removedUsers.includes(client.label)) return;
     connectedUsers.get(client.label).properDisconnect = true;
     removeUser(client.label);
 }
 
 function removeUser(userId, noNotif) {
+    console.log(userId, noNotif)
     if (connectedUsers.has(userId)) {
         clearInterval(connectedUsers.get(userId).interval);
         clearTimeout(connectedUsers.get(userId).timeout);
@@ -216,10 +216,6 @@ function removeUser(userId, noNotif) {
         connectedUsers.delete(userId);
         updateUsersList();
     }
-}
-
-function handleControls(websocket, userId, controls) {
-    // TODO
 }
 
 function updateUsersList() {
@@ -254,5 +250,5 @@ window.disconnectUser = async (userId) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         user.connection.close();
     }
-    removeUser(userId);
+    removeUser(userId, true);
 }
