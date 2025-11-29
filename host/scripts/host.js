@@ -43,12 +43,12 @@ function selectScript() {
     const script = document.querySelector("#script").value;
     const link = document.createElement("a");
     if (script === "windows") {
-        link.href = "/res/scripts/fireshare-host-script.exe";
-        link.download = "fireshare-host-script.exe";
+        link.href = "/res/scripts/netshare-host-script.exe";
+        link.download = "netshare-host-script.exe";
         document.body.appendChild(link);
     } else if (script === "linux") {
-        link.href = "/res/scripts/fireshare-host-script";
-        link.download = "fireshare-host-script";
+        link.href = "/res/scripts/netshare-host-script";
+        link.download = "netshare-host-script";
         document.body.appendChild(link);
     }
     link.click();

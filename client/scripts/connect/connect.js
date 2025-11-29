@@ -24,7 +24,7 @@ connect();
 
 function connect() {
     const hash = Math.random().toFixed(6).substring(2);
-    peer = new Peer('fireshare-' + hash + "-" + encodeURIComponent(nickname) + "-" + id);
+    peer = new Peer('netshare-' + hash + "-" + encodeURIComponent(nickname) + "-" + id);
     peer.on("open", () => clientOpen(peer));
     peer.on("call", (call) => handleIncomingCall(call));
     peer.on("error", (err) => {
@@ -34,7 +34,7 @@ function connect() {
 }
 
 function clientOpen(local) {
-    remote = local.connect("fireshare-" + id);
+    remote = local.connect("netshare-" + id);
     remote.on("open", () => hostOpen(remote));
     remote.on("data", (data) => hostData(remote, data));
     remote.on("close", () => hostClose());

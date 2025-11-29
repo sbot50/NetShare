@@ -1,5 +1,5 @@
 .idea/
 node_modules/
 configuration.json
-/res/scripts/fireshare-host-script
-/res/scripts/fireshare-host-script.exe
+/res/scripts/netshare-host-script
+/res/scripts/netshare-host-script.exe
