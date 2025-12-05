@@ -61,7 +61,9 @@ function mouseMoved(event) {
 function mouseDecay() {
     if (document.pointerLockElement !== null) {
         mouse["mouse_x"] *= 0.9;
+        if (mouse["mouse_x"] < 0.009) mouse["mouse_x"] = 0;
         mouse["mouse_y"] *= 0.9;
+        if (mouse["mouse_y"] < 0.009) mouse["mouse_y"] = 0;
     }
 }
 

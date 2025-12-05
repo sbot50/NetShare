@@ -157,6 +157,7 @@ function handleClientData(peer, websocket, client, data) {
     else if (data.rtype === "pong") handlePong(client.label);
     if (data.rtype === "connect" || data.rtype === "disconnect" || data.rtype === "controls") {
         data.id = client.label;
+        data.nickname = data.nickname || "Anonymous";
         websocket.send(JSON.stringify(data));
     }
 }
